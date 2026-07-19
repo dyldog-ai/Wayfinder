@@ -17,6 +17,7 @@
 import Foundation
 import Combine
 import CoreLocation
+import CoreGraphics
 
 /// Which destination-selection behaviour the compass runs in — the SwiftUI
 /// equivalent of the old CREATOR / MULTIPLACE / (default) compile flags that
