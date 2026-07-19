@@ -33,12 +33,15 @@ jobs:
 
       # Build the full app (SwiftUI entry point + Dynamic Island widget) for a
       # real iOS Simulator so the UI compiles, not just the headless package.
+      # Use the generic "Any iOS Simulator Device" destination so the build is
+      # resilient to which specific simulator runtimes the runner image ships —
+      # a hard-coded device (e.g. "iPhone 15") breaks when that runtime is absent.
       - name: Build Wayfinder (iOS Simulator)
         run: |
           xcodebuild build \
             -scheme Wayfinder \
             -project Wayfinder.xcodeproj \
-            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug
 
   test:
@@ -69,6 +72,6 @@ jobs:
           xcodebuild test \
             -scheme Wayfinder \
             -project Wayfinder.xcodeproj \
-            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             -only-testing WayfinderKitTests
