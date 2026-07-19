@@ -33,6 +33,7 @@ struct CompassGlyph: View {
 }
 
 /// Lock Screen / notification presentation of the compass activity.
+@available(iOS 16.1, *)
 struct CompassLockScreenView: View {
     let state: CompassAttributes.State
 
@@ -57,7 +58,7 @@ struct CompassLockScreenView: View {
             Spacer(minLength: 0)
         }
         .padding()
-        .activityBackgroundTint(Color(red: 0.173, green: 0.243, blue: 0.314))
+        .background(Color(red: 0.173, green: 0.243, blue: 0.314))
     }
 }
 
@@ -65,6 +66,7 @@ struct CompassLockScreenView: View {
 /// Island (compact / minimal / expanded) and on the Lock Screen.
 @available(iOS 16.1, *)
 public struct CompassLiveActivity: Widget {
+    public init() {}
     public var body: some WidgetConfiguration {
         ActivityConfiguration(for: CompassAttributes.self) { context in
             CompassLockScreenView(state: context.state)
