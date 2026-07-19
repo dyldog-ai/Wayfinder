@@ -62,14 +62,15 @@ jobs:
       # The decoupled logic-layer (CompassMath + CompassViewModel, driven by
       # mock providers — no device/CoreLocation needed) lives in the local
       # SwiftPM package WayfinderKit. Testing the package directly via its
-      # auto-synthesized '<PackageName>-Package' scheme (Xcode reads
-      # Package.swift and synthesizes the scheme/workspace itself) avoids the
-      # XcodeGen app scheme, which has no test action for the package.
+      # auto-synthesized scheme (Xcode reads Package.swift and synthesizes the
+      # 'WayfinderKit' workspace + scheme itself) avoids the XcodeGen app
+      # scheme, which has no test action for the package. (The '-Package'
+      # suffix only applies to packages embedded inside an app's workspace.)
       - name: Test WayfinderKit logic
         run: |
           cd WayfinderKit
           xcodebuild test \
-            -scheme WayfinderKit-Package \
+            -scheme WayfinderKit \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             -only-testing WayfinderKitTests
