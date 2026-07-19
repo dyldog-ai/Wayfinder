@@ -15,19 +15,6 @@ packages:
   WayfinderKit:
     path: WayfinderKit
 
-schemes:
-  Wayfinder:
-    build:
-      targets:
-        Wayfinder: all
-        WayfinderKit: all
-        WayfinderKitTests: all
-    run:
-      target: Wayfinder
-    test:
-      targets:
-        - WayfinderKitTests
-
 targets:
   Wayfinder:
     type: application
