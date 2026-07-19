@@ -12,6 +12,7 @@
 //
 
 import SwiftUI
+import WayfinderKit
 
 struct DistanceInfoView: View {
     @EnvironmentObject private var compass: CompassViewModel

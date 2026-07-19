@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import WayfinderKit
 
 struct DestinationInfoView: View {
     @EnvironmentObject private var compass: CompassViewModel
