@@ -10,10 +10,10 @@ import DylKit
 import CoreLocation
 
 public protocol WayfinderViewDelegate {
-    public func wayfinderViewDidUpdate()
+    func wayfinderViewDidUpdate()
     /// Forwarded from `UserLocationManager` when location authorization is
     /// denied, so the compass UI can resolve a stuck "Searching..." state.
-    public func wayfinderViewAuthorizationDenied()
+    func wayfinderViewAuthorizationDenied()
 }
 
 public extension WayfinderViewDelegate {
