@@ -25,11 +25,11 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Generate Xcode project
+      - name: Generate Xcode workspace
         run: xcodegen generate
 
       - name: Resolve Swift packages
-        run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -project Wayfinder.xcodeproj
+        run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -workspace Wayfinder.xcworkspace
 
       # Build the full app (SwiftUI entry point + Dynamic Island widget) for a
       # real iOS Simulator so the UI compiles, not just the headless package.
@@ -40,7 +40,7 @@ jobs:
         run: |
           xcodebuild build \
             -scheme Wayfinder \
-            -project Wayfinder.xcodeproj \
+            -workspace Wayfinder.xcworkspace \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug
 
@@ -59,11 +59,11 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Generate Xcode project
+      - name: Generate Xcode workspace
         run: xcodegen generate
 
       - name: Resolve Swift packages
-        run: xcodebuild -resolvePackageDependencies -scheme WayfinderKit-Package -project Wayfinder.xcodeproj
+        run: xcodebuild -resolvePackageDependencies -scheme WayfinderKit-Package -workspace Wayfinder.xcworkspace
 
       # Run the decoupled logic-layer unit tests (CompassMath + CompassViewModel
       # driven by mock providers — no device/CoreLocation needed). XcodeGen/SwiftPM
@@ -74,7 +74,7 @@ jobs:
         run: |
           xcodebuild test \
             -scheme WayfinderKit-Package \
-            -project Wayfinder.xcodeproj \
+            -workspace Wayfinder.xcworkspace \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             -only-testing WayfinderKitTests
