@@ -63,14 +63,17 @@ jobs:
         run: xcodegen generate
 
       - name: Resolve Swift packages
-        run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -project Wayfinder.xcodeproj
+        run: xcodebuild -resolvePackageDependencies -scheme WayfinderKit-Package -project Wayfinder.xcodeproj
 
       # Run the decoupled logic-layer unit tests (CompassMath + CompassViewModel
-      # driven by mock providers — no device/CoreLocation needed).
+      # driven by mock providers — no device/CoreLocation needed). XcodeGen/SwiftPM
+      # expose the SwiftPM package's tests via the auto-generated
+      # '<PackageName>-Package' scheme, so test against that rather than the app
+      # scheme (which has no test action for the package).
       - name: Test WayfinderKit logic
         run: |
           xcodebuild test \
-            -scheme Wayfinder \
+            -scheme WayfinderKit-Package \
             -project Wayfinder.xcodeproj \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \

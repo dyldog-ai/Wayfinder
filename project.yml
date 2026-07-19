@@ -21,17 +21,6 @@ packages:
     url: https://github.com/SnapKit/SnapKit
     from: 5.0.1
 
-schemes:
-  Wayfinder:
-    build:
-      targets:
-        Wayfinder: all
-    test:
-      targets:
-        - WayfinderKitTests
-    run:
-      target: Wayfinder
-
 targets:
   Wayfinder:
     type: application
