@@ -174,7 +174,7 @@
         <!--Choose Location-->
         <scene sceneID="QaL-fw-LPt">
             <objects>
-                <viewController title="Choose Location" id="Egk-8P-eoI" customClass="LocationSelectionViewController" customModule="ATMMachineFinder" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Choose Location" id="Egk-8P-eoI" customClass="LocationSelectionViewController" customModule="Wayfinder" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="PzI-Ex-Ocy"/>
                         <viewControllerLayoutGuide type="bottom" id="mjD-0M-1Yg"/>

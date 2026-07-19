@@ -1,2 +1,0 @@
-Name: ChurchFinder
-File: /private/tmp/finder_image.png

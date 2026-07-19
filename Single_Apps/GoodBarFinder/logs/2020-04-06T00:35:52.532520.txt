@@ -1,5 +1,0 @@
-Name: BarFinder
-File: /private/tmp/finder_image.png
-Generating project Wayfinder
-[1m[32mProject generated.[0m[1m[0m
-Total time taken: 2.729s

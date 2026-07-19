@@ -7,10 +7,5 @@
 //
 
 import UIKit
-#if CREATOR
-class MainViewController: FinderColorsViewController { }
-#elseif MULTIPLACE
-class MainViewController: MultiPlaceHeadingViewController { }
-#else
-class MainViewController: SinglePlaceHeadingViewController {}
-#endif
+
+class MainViewController: SinglePlaceHeadingViewController { }
