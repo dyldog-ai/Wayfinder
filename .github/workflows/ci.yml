@@ -67,17 +67,17 @@ jobs:
       # scheme, which has no test action for the package. (The '-Package'
       # suffix only applies to packages embedded inside an app's workspace.)
       #
-      # Use the SAME resilient generic destination as the build step:
-      # 'generic/platform=iOS Simulator'. This lets xcodebuild pick whatever
-      # simulator the runner image provides — pinning a concrete device
-      # ('name=iPhone 17') or a bare 'OS=latest' (ambiguous -> exit 70) breaks
-      # when the runner's simulator set changes. The build step proves this
-      # destination resolves on the macos-latest image.
+      # Use 'platform=iOS Simulator,OS=latest' WITHOUT a hard-coded device
+      # name: xcodebuild resolves a simulator for the latest available OS on
+      # the runner. Pinning 'name=iPhone 17' (or any specific device) breaks
+      # when a runner image ships a different default simulator set — a latent
+      # flake. This mirrors the build step's resilient generic-destination
+      # intent.
       - name: Test WayfinderKit logic
         run: |
           cd WayfinderKit
           xcodebuild test \
             -scheme WayfinderKit \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination 'platform=iOS Simulator,OS=latest' \
             -configuration Debug \
             -only-testing WayfinderKitTests
