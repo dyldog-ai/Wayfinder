@@ -25,11 +25,11 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Generate Xcode workspace
+      - name: Generate Xcode project
         run: xcodegen generate
 
       - name: Resolve Swift packages
-        run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -workspace Wayfinder.xcworkspace
+        run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -project Wayfinder.xcodeproj
 
       # Build the full app (SwiftUI entry point + Dynamic Island widget) for a
       # real iOS Simulator so the UI compiles, not just the headless package.
@@ -40,7 +40,7 @@ jobs:
         run: |
           xcodebuild build \
             -scheme Wayfinder \
-            -workspace Wayfinder.xcworkspace \
+            -project Wayfinder.xcodeproj \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug
 
@@ -56,25 +56,20 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
+      - name: Show Xcode version
+        run: xcodebuild -version
 
-      - name: Generate Xcode workspace
-        run: xcodegen generate
-
-      - name: Resolve Swift packages
-        run: xcodebuild -resolvePackageDependencies -scheme WayfinderKit-Package -workspace Wayfinder.xcworkspace
-
-      # Run the decoupled logic-layer unit tests (CompassMath + CompassViewModel
-      # driven by mock providers — no device/CoreLocation needed). XcodeGen/SwiftPM
-      # expose the SwiftPM package's tests via the auto-generated
-      # '<PackageName>-Package' scheme, so test against that rather than the app
-      # scheme (which has no test action for the package).
+      # The decoupled logic-layer (CompassMath + CompassViewModel, driven by
+      # mock providers — no device/CoreLocation needed) lives in the local
+      # SwiftPM package WayfinderKit. Testing the package directly via its
+      # auto-synthesized '<PackageName>-Package' scheme (Xcode reads
+      # Package.swift and synthesizes the scheme/workspace itself) avoids the
+      # XcodeGen app scheme, which has no test action for the package.
       - name: Test WayfinderKit logic
         run: |
+          cd WayfinderKit
           xcodebuild test \
             -scheme WayfinderKit-Package \
-            -workspace Wayfinder.xcworkspace \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
             -only-testing WayfinderKitTests
