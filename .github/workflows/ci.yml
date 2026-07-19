@@ -66,11 +66,18 @@ jobs:
       # 'WayfinderKit' workspace + scheme itself) avoids the XcodeGen app
       # scheme, which has no test action for the package. (The '-Package'
       # suffix only applies to packages embedded inside an app's workspace.)
+      #
+      # Use 'platform=iOS Simulator,OS=latest' WITHOUT a hard-coded device
+      # name: xcodebuild resolves a simulator for the latest available OS on
+      # the runner. Pinning 'name=iPhone 17' (or any specific device) breaks
+      # when a runner image ships a different default simulator set — a latent
+      # flake. This mirrors the build step's resilient generic-destination
+      # intent.
       - name: Test WayfinderKit logic
         run: |
           cd WayfinderKit
           xcodebuild test \
             -scheme WayfinderKit \
-            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17' \
+            -destination 'platform=iOS Simulator,OS=latest' \
             -configuration Debug \
             -only-testing WayfinderKitTests
