@@ -71,6 +71,6 @@ jobs:
           cd WayfinderKit
           xcodebuild test \
             -scheme WayfinderKit \
-            -destination 'generic/platform=iOS Simulator' \
+            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 17' \
             -configuration Debug \
             -only-testing WayfinderKitTests
