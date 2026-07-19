@@ -2,9 +2,7 @@
 //  WayfinderTheme.swift
 //  Wayfinder
 //
-//  Centralised colour palette for the SwiftUI rebuild. Values mirror the
-//  named colours defined in Main.storyboard (the canonical palette — not the
-//  near-white overrides in Single_Apps/Wayfinder/Sources/Colors.swift).
+//  Centralised colour palette for the SwiftUI rebuild.
 //
 
 import SwiftUI

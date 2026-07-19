@@ -14,12 +14,19 @@ options:
 packages:
   WayfinderKit:
     path: WayfinderKit
-  Alamofire:
-    url: https://github.com/Alamofire/Alamofire
-    from: 5.4.3
-  SnapKit:
-    url: https://github.com/SnapKit/SnapKit
-    from: 5.0.1
+
+schemes:
+  Wayfinder:
+    build:
+      targets:
+        Wayfinder: all
+        WayfinderKit: all
+        WayfinderKitTests: all
+    run:
+      target: Wayfinder
+    test:
+      targets:
+        - WayfinderKitTests
 
 targets:
   Wayfinder:
@@ -28,12 +35,8 @@ targets:
     sources:
       - path: Single_Apps/Wayfinder/Sources
       - path: Single_Apps/Wayfinder/Resources
-      - path: Single_Apps/Wayfinder Shared/Sources
-      - path: Single_Apps/Wayfinder Shared/Resources
     dependencies:
       - package: WayfinderKit
-      - package: Alamofire
-      - package: SnapKit
       - target: WayfinderCompassWidget
     settings:
       base:

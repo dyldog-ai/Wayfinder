@@ -2,17 +2,16 @@
 //  CompassMath.swift
 //  WayfinderKit
 //
-//  Pure, platform-agnostic compass/bearing geometry extracted from the old
-//  UIKit code path (UserLocationManager.swift). No UIKit, no state — just math,
-//  so it is trivially unit-testable and reusable from SwiftUI view models.
+//  Pure, platform-agnostic compass/bearing geometry. No UIKit, no state — just
+//  math, so it is trivially unit-testable and reusable from SwiftUI view models.
 //
 
 import CoreLocation
 
-/// Namespaced, `public` compass geometry. The old code kept the same formulas
-/// as *internal* extensions on `Double` / `CLLocation` inside
-/// `UserLocationManager.swift`; those remain for the legacy UIKit path. This
-/// enum is the decoupled, testable surface the SwiftUI layer builds on.
+/// Namespaced, `public` compass geometry. The parallel formulas still live as
+/// internal extensions on `Double` / `CLLocation` inside `UserLocationManager`
+/// (used by the live CoreLocation manager); this enum is the decoupled,
+/// testable surface the SwiftUI layer builds on.
 public enum CompassMath {
 
     /// Degrees → radians.

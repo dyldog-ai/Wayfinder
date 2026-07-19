@@ -9,7 +9,6 @@
 // Bearing is angle between locations
 // Heading is compass direction/angle to north
 
-import UIKit
 import CoreLocation
 import DylKit
 

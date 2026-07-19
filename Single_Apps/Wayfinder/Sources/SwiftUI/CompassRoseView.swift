@@ -2,12 +2,10 @@
 //  CompassRoseView.swift
 //  Wayfinder
 //
-//  Center compass rose. Wraps the existing UIKit Wayfinder UIView via the
-//  `Wayfinder` UIViewRepresentable (WayfinderKit/Sources/WayfinderKit/Wayfinder.swift)
-//  so the tuned needle drawing is reused during the rebuild. The needle angle is
-//  driven by CompassViewModel + the WayfinderView's own location manager, so we
-//  just hand it the destination and let it track. Swap this single view for a
-//  pure-SwiftUI Canvas needle later if desired.
+//  Center compass rose. Draws a pure-SwiftUI needle rotated by the live
+//  `needleAngle` published by CompassViewModel (radians; 0 = pointing up/north).
+//  This replaces the old UIKit `Wayfinder` UIViewRepresentable bridge and its
+//  `WayfinderView`/`HeadingView` CoreGraphics needle — no UIKit involved.
 //
 
 import SwiftUI
@@ -21,21 +19,12 @@ struct CompassRoseView: View {
             WayfinderTheme.button
                 .ignoresSafeArea()
 
-            if let destination = compass.destination {
-                Wayfinder(destination: destination) { _ in
-                    // Heading/location updates are already piped through
-                    // CompassViewModel.onUpdate via the app entry point.
-                }
-            } else {
-                // No destination: show a north-pointing needle placeholder
-                // rotated by the live needle angle from the view model.
-                Image(systemName: "location.north.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
-                    .foregroundColor(WayfinderTheme.arrow)
-                    .rotationEffect(.radians(Double(compass.needleAngle)))
-            }
+            Image(systemName: "location.north.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200, height: 200)
+                .foregroundColor(WayfinderTheme.arrow)
+                .rotationEffect(.radians(Double(compass.needleAngle)))
         }
     }
 }

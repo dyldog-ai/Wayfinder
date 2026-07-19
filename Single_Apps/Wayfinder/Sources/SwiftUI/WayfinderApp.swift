@@ -2,15 +2,16 @@
 //  WayfinderApp.swift
 //  Wayfinder
 //
-//  SwiftUI app entry point. Replaces @UIApplicationMain / AppDelegate +
-//  Main.storyboard. Builds the view models (logic task t_2e36b2c4) and injects
-//  them as environment objects, plus the compass mode as an environment value
-//  so views can adapt without reaching into the view model's private state.
+//  SwiftUI app entry point. Owns the lifecycle (no AppDelegate / storyboard).
+//  Builds the view models (logic task t_2e36b2c4) and injects them as
+//  environment objects, plus the compass mode as an environment value so views
+//  can adapt without reaching into the view model's private state.
 //
-//  LiveLocationProvider / MapKitLocationSearchAdapter live in the app target
-//  (they pull in CoreLocation / MapKit). The entry point constructs them;
-//  previews use the in-package mock doubles. The compass refresh hook pushes
-//  heading/destination/distance into the Dynamic Island Live Activity.
+//  LiveLocationProvider / MapKitLocationSearchProvider live in the app target
+//  (they pull in CoreLocation / MapKit — neither is UIKit). The entry point
+//  constructs them; previews use the in-package mock doubles. The compass
+//  refresh hook pushes heading/destination/distance into the Dynamic Island
+//  Live Activity.
 //
 
 import SwiftUI
@@ -35,10 +36,8 @@ extension EnvironmentValues {
 struct WayfinderApp: App {
     // The legacy Info.plist sets WFPlacesType = "multi", so we run in the
     // user-selected (multi-place) flow; the nearest-place flow would apply a
-    // GooglePlacesNearestAdapter + .nearestPlace mode instead.
+    // provider + .nearestPlace mode instead.
     private let mode: CompassMode = .userSelected
-
-    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     @StateObject private var compass: CompassViewModel
     @StateObject private var searchVM: LocationSearchViewModel
@@ -46,7 +45,7 @@ struct WayfinderApp: App {
     @MainActor
     init() {
         let location = LiveLocationProvider()
-        let search = MapKitLocationSearchAdapter()
+        let search = MapKitLocationSearchProvider()
         let mode: CompassMode = .userSelected
         let nearest: NearestPlaceProviding? = nil
         _compass = StateObject(wrappedValue: CompassViewModel(
