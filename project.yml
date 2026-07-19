@@ -26,13 +26,11 @@ schemes:
     build:
       targets:
         Wayfinder: all
-        WayfinderKit: all
-        WayfinderKitTests: all
-    run:
-      target: Wayfinder
     test:
       targets:
         - WayfinderKitTests
+    run:
+      target: Wayfinder
 
 targets:
   Wayfinder:
