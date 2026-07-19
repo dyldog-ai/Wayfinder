@@ -13,7 +13,7 @@ let package = Package(
             targets: ["WayfinderKit"]),
     ],
     dependencies: [
-        .package(name: "DylKit", path: "../../DylKit")
+        .package(url: "https://github.com/Dyldog/DylKit", .branch("master"))
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

@@ -139,6 +139,32 @@ class HeadingViewController: UIViewController, WayfinderViewDelegate {
     func updateViewsForNewUserLocation() {
         headingView?.updateHeadingViewAngle()
         updateDistanceLabel()
+        startOrUpdateCompassLiveActivity()
+    }
+
+    // MARK: - Dynamic Island / Live Activity
+
+    /// Push the current heading + destination into the Dynamic Island Live
+    /// Activity. No-op on iOS < 16.1 or when Live Activities are disabled.
+    private func startOrUpdateCompassLiveActivity() {
+        guard #available(iOS 16.1, *) else { return }
+        guard let hv = headingView else { return }
+
+        let heading = Double(hv.locationManager.latestHeading ?? 0)
+        let label = CompassAttributes.cardinalLabel(for: heading)
+        let destination = hv.destination
+        let destinationName = destination?.headableName() ?? ""
+        let distanceString: String
+        if let dest = destination {
+            distanceString = hv.locationManager.distanceString(to: dest.headableLocation()) ?? ""
+        } else {
+            distanceString = ""
+        }
+
+        CompassLiveActivityManager.shared.startOrUpdate(headingDegrees: heading,
+                                                         headingLabel: label,
+                                                         destinationName: destinationName,
+                                                         distanceString: distanceString)
     }
     
     @objc open func onHeadingViewLongPress() { }

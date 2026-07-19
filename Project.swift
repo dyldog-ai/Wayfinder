@@ -29,7 +29,7 @@ extension Target {
             platform: .iOS,
             product: .app,
             bundleId: bundleId,
-            deploymentTarget: .iOS(targetVersion: "12.0", devices: [.iphone]),
+            deploymentTarget: .iOS(targetVersion: "16.1", devices: [.iphone]),
             infoPlist: .extendingDefault(with: infoPlistExtensions),
             sources: [
                     "Single_Apps/\(name)/Sources/**",
@@ -98,7 +98,7 @@ extension Target {
             platform: .iOS,
             product: .app,
             bundleId: bundleId,
-            deploymentTarget: .iOS(targetVersion: "12.1", devices: [.iphone]),
+            deploymentTarget: .iOS(targetVersion: "16.1", devices: [.iphone]),
             infoPlist: .extendingDefault(with: infoPlistExtensions),
             sources: [
                     "Single_Apps/Wayfinder Shared/Sources/**",
