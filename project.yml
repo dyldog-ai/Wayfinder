@@ -20,12 +20,11 @@ packages:
   SnapKit:
     url: https://github.com/SnapKit/SnapKit
     from: 5.0.1
-  SwiftyDraw:
-    url: https://github.com/Awalz/SwiftyDraw
-    from: 2.4.1
-  ChromaColorPicker:
-    url: https://github.com/joncardasis/ChromaColorPicker
-    branch: master
+  # NOTE: SwiftyDraw + ChromaColorPicker are only used by the FinderCreator
+  # target and no longer compile under the current Swift toolchain. They are
+  # intentionally omitted here because this XcodeGen project only builds the
+  # Wayfinder app + compass widget. The Tuist Project.swift still references
+  # them for local multi-app development.
 
 targets:
   Wayfinder:
@@ -40,8 +39,6 @@ targets:
       - package: WayfinderKit
       - package: Alamofire
       - package: SnapKit
-      - package: SwiftyDraw
-      - package: ChromaColorPicker
       - target: WayfinderCompassWidget
     settings:
       base:
