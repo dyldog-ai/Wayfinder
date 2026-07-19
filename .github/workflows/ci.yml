@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches: ["master", "feature/**"]
   pull_request:
-    branches: [master]
+    branches: ["master"]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -38,11 +39,4 @@ jobs:
             -destination 'generic/platform=iOS' \
             -configuration Release \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty || xcodebuild build \
-              -scheme Wayfinder \
-              -project Wayfinder.xcodeproj \
-              -destination 'generic/platform=iOS' \
-              -configuration Release \
-              CODE_SIGNING_REQUIRED=NO \
-              CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO
