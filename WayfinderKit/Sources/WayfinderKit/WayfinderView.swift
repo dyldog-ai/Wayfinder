@@ -11,6 +11,13 @@ import CoreLocation
 
 public protocol WayfinderViewDelegate {
     func wayfinderViewDidUpdate()
+    /// Forwarded from `UserLocationManager` when location authorization is
+    /// denied, so the compass UI can resolve a stuck "Searching..." state.
+    func wayfinderViewAuthorizationDenied()
+}
+
+extension WayfinderViewDelegate {
+    func wayfinderViewAuthorizationDenied() {}
 }
 
 public class WayfinderView: UIView, UserLocationManagerDelegate {
@@ -75,6 +82,10 @@ public class WayfinderView: UIView, UserLocationManagerDelegate {
     func userLocationManagerDidUpdate() {
         updateHeadingViewAngle()
         delegate?.wayfinderViewDidUpdate()
+    }
+    
+    func userLocationManagerAuthorizationDenied() {
+        delegate?.wayfinderViewAuthorizationDenied()
     }
     
     func headingForEmptyDestination() -> CLLocationDirection {

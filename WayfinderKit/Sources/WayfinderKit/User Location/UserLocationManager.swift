@@ -13,9 +13,16 @@ import UIKit
 import CoreLocation
 import DylKit
 
-protocol UserLocationManagerDelegate {
+protocol UserLocationManagerDelegate: AnyObject {
     // TODO: Make separate methods for location and heading updates
     func userLocationManagerDidUpdate()
+    /// Called when the user has denied (or the system has restricted) location
+    /// authorization, so the UI can leave a stuck "Searching..." state.
+    func userLocationManagerAuthorizationDenied()
+}
+
+extension UserLocationManagerDelegate {
+    func userLocationManagerAuthorizationDenied() {}
 }
 
 extension Double {
@@ -105,18 +112,34 @@ public class UserLocationManager: NSObject, UserLocationManagerType, CLLocationM
     
     public func startLocationEvents() {
         locationManager.delegate = self
-        
-        onBG {
-            if CLLocationManager.headingAvailable() {
-                self.locationManager.startUpdatingHeading()
-            }
+        // All CLLocationManager configuration and authorization requests must
+        // happen on the main thread. Dispatching them to a background queue
+        // (the old `onBG` call) made the authorization request abort and the
+        // manager report `kCLErrorDomain Code=1`, leaving the compass stuck on
+        // "Searching...". `startServices()` re-dispatches to main internally.
+        startServices()
+    }
+    
+    /// Start heading updates (always safe — the magnetometer needs no location
+    /// authorization) and, when authorized, location updates. Also notifies the
+    /// delegate if authorization is denied so the UI can leave "Searching...".
+    /// Must run on the main thread.
+    private func startServices() {
+        DispatchQueue.main.async {
+            guard CLLocationManager.headingAvailable() else { return }
+            self.locationManager.startUpdatingHeading()
             
-            if CLLocationManager.authorizationStatus() == .notDetermined {
+            switch CLLocationManager.authorizationStatus() {
+            case .authorizedWhenInUse, .authorizedAlways:
+                if CLLocationManager.locationServicesEnabled() {
+                    self.locationManager.startUpdatingLocation()
+                }
+            case .denied, .restricted:
+                self.delegate?.userLocationManagerAuthorizationDenied()
+            case .notDetermined:
                 self.locationManager.requestWhenInUseAuthorization()
-            }
-            
-            if CLLocationManager.locationServicesEnabled() {
-                self.locationManager.startUpdatingLocation()
+            @unknown default:
+                break
             }
         }
     }
@@ -141,7 +164,17 @@ public class UserLocationManager: NSObject, UserLocationManagerType, CLLocationM
         }
     }
     
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        startServices()
+    }
+    
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error)
+        // kCLErrorDomain Code=1 (kCLErrorLocationUnknown) is transient while a
+        // fix is being acquired and is expected on first launch — ignore it so
+        // it doesn't re-trigger the failure path. Other errors are surfaced.
+        if let clError = error as? CLError, clError.code == .locationUnknown {
+            return
+        }
+        print("UserLocationManager didFailWithError: \(error)")
     }
 }

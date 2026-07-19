@@ -38,5 +38,7 @@
 	</array>
 	<key>WFPlacesType</key>
 	<string>multi</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 </dict>
 </plist>

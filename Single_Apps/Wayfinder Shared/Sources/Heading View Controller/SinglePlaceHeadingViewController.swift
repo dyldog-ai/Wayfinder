@@ -25,8 +25,17 @@ class SinglePlaceHeadingViewController: HeadingViewController, GooglePlacesManag
         // Dispose of any resources that can be recreated.
     }
 
+    private var locationAuthorizationDenied = false
+    
     override func titleForEmptyDestination() -> String {
-        return "Searching..."
+        return locationAuthorizationDenied ? "Location access off" : "Searching..."
+    }
+    
+    func wayfinderViewAuthorizationDenied() {
+        locationAuthorizationDenied = true
+        // Refresh so the destination label leaves "Searching..." and the needle
+        // (driven by heading, which needs no location permission) still moves.
+        updateViewsForNewUserLocation()
     }
     
     override func wayfinderViewDidUpdate() {
