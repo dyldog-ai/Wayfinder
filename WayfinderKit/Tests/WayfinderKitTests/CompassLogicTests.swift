@@ -86,6 +86,16 @@ final class CompassViewModelTests: XCTestCase {
                                   nearestProvider: MockNearestPlaceProvider(places: []))
         vm.start()
         loc.denyAuthorization()
+        // isAuthorizationDenied + destinationTitle are updated on the main
+        // actor via receive(on: RunLoop.main); wait for the update to land.
+        let exp = expectation(description: "authorization denied reflected")
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true) { _ in
+            if vm.isAuthorizationDenied && vm.destinationTitle == "Location access off" {
+                exp.fulfill()
+            }
+        }
+        wait(for: [exp], timeout: 2.0)
+        timer.invalidate()
         XCTAssertTrue(vm.isAuthorizationDenied)
         XCTAssertEqual(vm.destinationTitle, "Location access off")
     }
@@ -96,13 +106,16 @@ final class CompassViewModelTests: XCTestCase {
         let vm = CompassViewModel(mode: .nearestPlace, location: loc,
                                   nearestProvider: MockNearestPlaceProvider(places: [target]))
         vm.start()
-        loc.emit() // trigger update → nearest search resolves synchronously in mock
-        // Task hop for the @MainActor completion; drain the run loop briefly.
+        loc.emit() // trigger update → nearest search resolves via @MainActor task
+        // The destination is set on the main actor inside an async Task, so poll
+        // until it lands rather than checking once (a single check can run before
+        // the task completes and then never re-check).
         let exp = expectation(description: "destination set")
-        DispatchQueue.main.async {
+        let timer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true) { _ in
             if vm.hasDestination { exp.fulfill() }
         }
-        wait(for: [exp], timeout: 1.0)
+        wait(for: [exp], timeout: 2.0)
+        timer.invalidate()
         XCTAssertEqual(vm.destination?.name, "The Pub")
         XCTAssertTrue(vm.hasDestination)
         XCTAssertNotNil(vm.distanceText)
