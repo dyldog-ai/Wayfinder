@@ -5,10 +5,14 @@
 //  Created by Dylan Elliott on 25/7/17.
 //  Copyright © 2017 Dylan Elliott. All rights reserved.
 //
+//  No longer the app entry point — WayfinderApp (SwiftUI @main) owns the
+//  lifecycle. Wired in via @UIApplicationDelegateAdaptor so the global
+//  UINavigationBar appearance (dark toolbar tint) still applies to the
+//  SwiftUI NavigationStack.
+//
 
 import UIKit
 
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
@@ -19,14 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = .toolbar
         UINavigationBar.appearance().tintColor = .h1
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.h2]
-        
-        #if DEBUG
-        window?.showAppNoteOnShake()
-        #endif
 
         return true
     }
-    
-    
 }
-

@@ -31,12 +31,44 @@ jobs:
       - name: Resolve Swift packages
         run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -project Wayfinder.xcodeproj
 
-      - name: Build Wayfinder (unsigned)
+      # Build the full app (SwiftUI entry point + Dynamic Island widget) for a
+      # real iOS Simulator so the UI compiles, not just the headless package.
+      - name: Build Wayfinder (iOS Simulator)
         run: |
           xcodebuild build \
             -scheme Wayfinder \
             -project Wayfinder.xcodeproj \
-            -destination 'generic/platform=iOS' \
-            -configuration Release \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -configuration Debug
+
+  test:
+    runs-on: macos-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Resolve Swift packages
+        run: xcodebuild -resolvePackageDependencies -scheme Wayfinder -project Wayfinder.xcodeproj
+
+      # Run the decoupled logic-layer unit tests (CompassMath + CompassViewModel
+      # driven by mock providers — no device/CoreLocation needed).
+      - name: Test WayfinderKit logic
+        run: |
+          xcodebuild test \
+            -scheme Wayfinder \
+            -project Wayfinder.xcodeproj \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -configuration Debug \
+            -only-testing WayfinderKitTests
