@@ -41,6 +41,7 @@ struct WayfinderApp: App {
 
     @StateObject private var compass: CompassViewModel
     @StateObject private var searchVM: LocationSearchViewModel
+    @StateObject private var savedPlaces: SavedPlacesStore
 
     @MainActor
     init() {
@@ -51,6 +52,7 @@ struct WayfinderApp: App {
         _compass = StateObject(wrappedValue: CompassViewModel(
             mode: mode, location: location, nearestProvider: nearest))
         _searchVM = StateObject(wrappedValue: LocationSearchViewModel(provider: search))
+        _savedPlaces = StateObject(wrappedValue: SavedPlacesStore())
 
         // Push every refresh into the Dynamic Island / Lock Screen Live Activity.
         compass.onUpdate = { headingDegrees, destinationName, distanceString in
@@ -69,6 +71,7 @@ struct WayfinderApp: App {
             CompassView()
                 .environmentObject(compass)
                 .environmentObject(searchVM)
+                .environmentObject(savedPlaces)
                 .environment(\.compassMode, mode)
         }
     }
