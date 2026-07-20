@@ -41,13 +41,30 @@ public enum CompassMath {
         return (bearing + 360.0).truncatingRemainder(dividingBy: 360.0)
     }
 
-    /// Angle (degrees) the compass needle must point so that, given the device's
-    /// current `heading` (degrees from true north), it aims at `destination`
-    /// from `origin`. Matches the legacy `bearingBetween(heading:and:)`.
+    /// Wrap an arbitrary angle into the canonical `[0, 360)` bearing range.
+    /// Handles negative inputs and values `> 360` (e.g. `heading` passed as
+    /// `360` or `-30`).
+    public static func normalizeBearing(_ degrees: Double) -> CLLocationDirection {
+        let r = degrees.truncatingRemainder(dividingBy: 360.0)
+        return (r + 360.0).truncatingRemainder(dividingBy: 360.0)
+    }
+
+    /// Relative bearing (degrees, `0..<360`, clockwise) from the device's
+    /// current `heading` (degrees clockwise from true north) to `destination`
+    /// as seen from `origin`.
+    ///
+    /// A *relative* bearing is the angle you would turn, clockwise, to face the
+    /// target: `absoluteBearing - heading`. The previous implementation returned
+    /// `heading - bearing`, inverting the sign so the needle pointed to the
+    /// mirror-image (port) side; it also skipped normalisation, yielding
+    /// negative angles for `heading == 360` or negative heading inputs.
+    ///
+    /// Equivalent to the legacy `bearingBetween(heading:and:)` once that helper
+    /// is corrected to the same convention.
     public static func relativeBearing(userHeading heading: CLLocationDirection,
                                        from origin: CLLocation,
                                        to destination: CLLocation) -> CLLocationDirection {
-        heading - bearing(from: origin, to: destination)
+        normalizeBearing(bearing(from: origin, to: destination) - heading)
     }
 
     /// Human-readable distance string, matching the legacy

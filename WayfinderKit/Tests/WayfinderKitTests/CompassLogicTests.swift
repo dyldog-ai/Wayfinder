@@ -48,6 +48,48 @@ final class CompassMathTests: XCTestCase {
         XCTAssertEqual(rel, 0, accuracy: 0.5)
     }
 
+    /// The relative bearing is `absoluteBearing - heading` (clockwise angle from
+    /// the user's heading to the target). This is the regression test for the
+    /// sign-convention bug: the old code returned `heading - bearing`, which
+    /// mirrored the direction (port instead of starboard).
+    func testRelativeBearingSignConvention() {
+        let origin = CLLocation(latitude: 0, longitude: 0)
+        let east = CLLocation(latitude: 0, longitude: 1) // absolute bearing ~90
+        // Facing north (0), target due east → must turn 90° clockwise (to starboard).
+        let rel = CompassMath.relativeBearing(userHeading: 0, from: origin, to: east)
+        XCTAssertEqual(rel, 90, accuracy: 0.5)
+        // Facing east (90), target due north → must turn 90° counter-clockwise
+        // → normalised to 270° (right-hand side wrap), not -90°.
+        let rel2 = CompassMath.relativeBearing(userHeading: 90, from: origin, to: CLLocation(latitude: 1, longitude: 0))
+        XCTAssertEqual(rel2, 270, accuracy: 0.5)
+    }
+
+    /// `normalizeBearing` wraps to the canonical `[0, 360)` range.
+    func testNormalizeBearingEdgeCases() {
+        XCTAssertEqual(CompassMath.normalizeBearing(0), 0, accuracy: 1e-9)
+        XCTAssertEqual(CompassMath.normalizeBearing(360), 0, accuracy: 1e-9)
+        XCTAssertEqual(CompassMath.normalizeBearing(-30), 330, accuracy: 1e-9)
+        XCTAssertEqual(CompassMath.normalizeBearing(450), 90, accuracy: 1e-9)
+        let b = CompassMath.normalizeBearing(-0.001)
+        XCTAssertTrue(b >= 0 && b < 360)
+    }
+
+    /// Relative bearing must stay normalised even with a 360° / negative heading
+    /// input (the old code produced negative angles for these).
+    func testRelativeBearingNormalisesToZero360() {
+        let origin = CLLocation(latitude: 0, longitude: 0)
+        let east = CLLocation(latitude: 0, longitude: 1) // bearing ~90
+        // heading == 360 (≡ north) facing a target due east → 90°.
+        let a = CompassMath.relativeBearing(userHeading: 360, from: origin, to: east)
+        XCTAssertEqual(a, 90, accuracy: 0.5)
+        XCTAssertTrue(a >= 0 && a < 360)
+        // heading == -90 (≡ 270, facing west); target due east (bearing 90) →
+        // 90 - (-90) = 180.
+        let b = CompassMath.relativeBearing(userHeading: -90, from: origin, to: east)
+        XCTAssertEqual(b, 180, accuracy: 0.5)
+        XCTAssertTrue(b >= 0 && b < 360)
+    }
+
     func testDistanceStringMetersUnderOneKm() {
         XCTAssertEqual(CompassMath.distanceString(meters: 350), "350 m")
     }

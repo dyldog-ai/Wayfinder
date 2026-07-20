@@ -53,15 +53,14 @@ extension CLLocation {
     }
     
     func bearingBetween(heading: CLLocationDirection, and destination: CLLocation) -> CLLocationDirection  {
-        var bearing: CLLocationDirection
-        
         let userAngleFromNorth = heading
         let destinationAngleFromNorth = self.bearingTo(destination: destination)
-        let destinationAngleFromUser = userAngleFromNorth - destinationAngleFromNorth
-        
-        bearing = destinationAngleFromUser
-        
-        return bearing
+        // Relative bearing: clockwise angle from the user's heading to the
+        // target. Previous code used `userAngleFromNorth - destinationAngleFromNorth`,
+        // which mirrors the direction (port instead of starboard).
+        let destinationAngleFromUser = destinationAngleFromNorth - userAngleFromNorth
+
+        return destinationAngleFromUser
     }
 }
 
