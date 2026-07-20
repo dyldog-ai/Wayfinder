@@ -1,61 +1,7 @@
 import SwiftUI
 import WidgetKit
 import ActivityKit
-
-/// A small rotating compass needle used in the Dynamic Island and Lock Screen.
-struct CompassNeedle: View {
-    let headingDegrees: Double
-    let borderColor: Color = .white
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(borderColor.opacity(0.5), lineWidth: 2)
-            CompassGlyph(headingDegrees: headingDegrees)
-                .padding(20)
-        }
-    }
-}
-
-/// Compact glyph for the minimal Dynamic Island presentation.
-struct CompassGlyph: View {
-    let headingDegrees: Double
-
-    var body: some View {
-        DrawnCompassNeedle()
-            .rotationEffect(.degrees(headingDegrees))
-    }
-}
-
-/// Lock Screen / notification presentation of the compass activity.
-@available(iOS 16.1, *)
-struct CompassLockScreenView: View {
-    let state: CompassAttributes.State
-
-    var body: some View {
-        HStack(spacing: 12) {
-            CompassNeedle(headingDegrees: state.headingDegrees)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(state.destinationName.isEmpty ? "No destination" : state.destinationName)
-                    .font(.headline)
-                    .foregroundColor(.white)
-                HStack {
-                    Text("Heading \(state.headingLabel) · \(Int(state.headingDegrees))°")
-                        .font(.subheadline)
-                        .foregroundColor(.white.opacity(0.8))
-                    if !state.distanceString.isEmpty {
-                        Text("· \(state.distanceString)")
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.8))
-                    }
-                }
-            }
-            Spacer(minLength: 0)
-        }
-        .padding()
-        .background(Color(red: 0.173, green: 0.243, blue: 0.314))
-    }
-}
+import WayfinderKit
 
 /// The Live Activity configuration. Rendered by the system in the Dynamic
 /// Island (compact / minimal / expanded) and on the Lock Screen.

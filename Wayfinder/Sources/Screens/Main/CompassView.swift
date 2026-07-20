@@ -24,12 +24,18 @@ struct CompassView: View {
                 
                 Spacer()
 
-                CompassRoseView()
-                    .padding(.vertical, 8)
-                    .onLongPressGesture {
-                        // Replaces MultiPlaceHeadingViewController.onHeadingViewLongPress
-                        showHallOfFame = true
-                    }
+                ZStack {
+                    DrawnCompassNeedle()
+                        .scaledToFit()
+                        .padding(40)
+                        .foregroundColor(WayfinderTheme.arrow)
+                        .rotationEffect(.radians(Double(compass.needleAngle)))
+                }
+                .padding(.vertical, 8)
+                .onLongPressGesture {
+                    // Replaces MultiPlaceHeadingViewController.onHeadingViewLongPress
+                    showHallOfFame = true
+                }
 
                 Spacer()
                 
