@@ -19,10 +19,9 @@ struct CompassRoseView: View {
             WayfinderTheme.background
                 .ignoresSafeArea()
 
-            Image(systemName: "location.north.fill")
-                .resizable()
+            DrawnCompassNeedle()
                 .scaledToFit()
-                .frame(width: 200, height: 200)
+                .padding(40)
                 .foregroundColor(WayfinderTheme.arrow)
                 .rotationEffect(.radians(Double(compass.needleAngle)))
         }

@@ -5,19 +5,14 @@ import ActivityKit
 /// A small rotating compass needle used in the Dynamic Island and Lock Screen.
 struct CompassNeedle: View {
     let headingDegrees: Double
-    var color: Color = .white
+    let borderColor: Color = .white
 
     var body: some View {
         ZStack {
             Circle()
-                .stroke(color.opacity(0.5), lineWidth: 2)
-                .frame(width: 36, height: 36)
-            Image(systemName: "location.north.fill")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 18, height: 18)
-                .foregroundColor(color)
-                .rotationEffect(.degrees(headingDegrees))
+                .stroke(borderColor.opacity(0.5), lineWidth: 2)
+            CompassGlyph(headingDegrees: headingDegrees)
+                .padding(20)
         }
     }
 }
@@ -27,8 +22,8 @@ struct CompassGlyph: View {
     let headingDegrees: Double
 
     var body: some View {
-        CompassNeedle(headingDegrees: headingDegrees, color: .white)
-            .frame(width: 18, height: 18)
+        DrawnCompassNeedle()
+            .rotationEffect(.degrees(headingDegrees))
     }
 }
 
@@ -106,6 +101,7 @@ public struct CompassLiveActivity: Widget {
                 }
             } compactLeading: {
                 CompassGlyph(headingDegrees: context.state.headingDegrees)
+                    .padding(2)
             } compactTrailing: {
                 Text(context.state.distanceString)
                     .font(.caption2.bold())
