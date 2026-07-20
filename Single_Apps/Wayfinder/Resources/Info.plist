@@ -36,5 +36,7 @@
 	<string>multi</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>UILaunchScreen</key>
+	<dict/>
 </dict>
 </plist>
