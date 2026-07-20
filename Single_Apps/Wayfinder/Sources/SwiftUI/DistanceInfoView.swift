@@ -21,13 +21,15 @@ struct DistanceInfoView: View {
 
     var body: some View {
         VStack(spacing: 5) {
-            VStack(spacing: 0) {
-                Text("DISTANCE")
-                    .font(.custom("Arial Rounded MT Bold", size: 17))
-                    .foregroundColor(WayfinderTheme.h1)
-                Text(compass.distanceText ?? "0 km")
-                    .font(.custom("Arial Rounded MT Bold", size: 20))
-                    .foregroundColor(WayfinderTheme.h2)
+            if compass.hasDestination {
+                VStack(spacing: 0) {
+                    Text("DISTANCE")
+                        .font(.custom("Arial Rounded MT Bold", size: 17))
+                        .foregroundColor(WayfinderTheme.h1)
+                    Text(compass.distanceText ?? "0 km")
+                        .font(.custom("Arial Rounded MT Bold", size: 20))
+                        .foregroundColor(WayfinderTheme.h2)
+                }
             }
 
             if mode == .userSelected {

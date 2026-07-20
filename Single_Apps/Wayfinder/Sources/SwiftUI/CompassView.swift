@@ -21,6 +21,8 @@ struct CompassView: View {
             VStack(spacing: 0) {
                 DestinationInfoView()
                     .padding(.top, 8)
+                
+                Spacer()
 
                 CompassRoseView()
                     .padding(.vertical, 8)
@@ -29,9 +31,12 @@ struct CompassView: View {
                         showHallOfFame = true
                     }
 
+                Spacer()
+                
                 DistanceInfoView(showLocationSelection: $showLocationSelection)
             }
             .background(WayfinderTheme.background)
+            .toolbar(.hidden)
             .navigationTitle("Wayfinder")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear { compass.start() }

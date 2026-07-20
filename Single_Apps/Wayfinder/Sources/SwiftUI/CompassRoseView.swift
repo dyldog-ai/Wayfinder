@@ -16,7 +16,7 @@ struct CompassRoseView: View {
 
     var body: some View {
         ZStack {
-            WayfinderTheme.button
+            WayfinderTheme.background
                 .ignoresSafeArea()
 
             Image(systemName: "location.north.fill")
