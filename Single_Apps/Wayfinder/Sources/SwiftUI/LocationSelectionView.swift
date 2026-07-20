@@ -9,9 +9,10 @@
 //  clears the destination.
 //
 //  Search is driven by the LocationSearchViewModel injected as an environment
-//  object from WayfinderApp (logic task). Saved places are held locally here
-//  with a TODO to back them with @AppStorage("SAVED_PLACES") (the legacy
-//  persistence) — lift into a model when the logic task adds one.
+//  object from WayfinderApp (logic task). Favourites are owned by the injected
+//  SavedPlacesStore (logic layer), which persists them to UserDefaults so they
+//  survive app reloads — previously they were a non-persisted @State array and
+//  reset every time the sheet closed.
 //
 
 import SwiftUI
@@ -20,14 +21,12 @@ import WayfinderKit
 struct LocationSelectionView: View {
     @EnvironmentObject private var compass: CompassViewModel
     @EnvironmentObject private var searchVM: LocationSearchViewModel
+    @EnvironmentObject private var savedPlaces: SavedPlacesStore
     @Environment(\.dismiss) private var dismiss
-
-    // TODO(logic): back with @AppStorage("SAVED_PLACES") once a model exists.
-    @State private var savedPlaces: [FinderPlace] = []
 
     private var displayedPlaces: [FinderPlace] {
         searchVM.query.trimmingCharacters(in: .whitespaces).isEmpty
-            ? savedPlaces
+            ? savedPlaces.places
             : searchVM.results
     }
 
@@ -48,7 +47,7 @@ struct LocationSelectionView: View {
                             PlaceRowView(
                                 name: place.name,
                                 address: place.address,
-                                isStarred: savedPlaces.contains(where: { $0.id == place.id })
+                                isStarred: savedPlaces.isSaved(place)
                             )
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -59,7 +58,7 @@ struct LocationSelectionView: View {
                                 Button {
                                     toggleSaved(place)
                                 } label: {
-                                    Image(systemName: savedPlaces.contains(where: { $0.id == place.id }) ? "star.slash.fill" : "star.fill")
+                                    Image(systemName: savedPlaces.isSaved(place) ? "star.slash.fill" : "star.fill")
                                 }
                                 .tint(.yellow)
                             }
@@ -93,11 +92,6 @@ struct LocationSelectionView: View {
     }
 
     private func toggleSaved(_ place: FinderPlace) {
-        if let index = savedPlaces.firstIndex(where: { $0.id == place.id }) {
-            savedPlaces.remove(at: index)
-        } else {
-            savedPlaces.append(place)
-        }
-        // TODO(logic): persist savedPlaces to @AppStorage("SAVED_PLACES").
+        savedPlaces.toggle(place)
     }
 }

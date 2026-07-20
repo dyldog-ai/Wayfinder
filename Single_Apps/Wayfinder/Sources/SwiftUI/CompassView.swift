@@ -61,5 +61,6 @@ struct CompassView: View {
             location: MockLocationProvider()))
         .environmentObject(LocationSearchViewModel(
             provider: MockLocationSearchProvider(places: [])))
+        .environmentObject(SavedPlacesStore())
         .environment(\.compassMode, .userSelected)
 }
