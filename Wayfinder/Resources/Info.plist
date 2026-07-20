@@ -22,8 +22,20 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Location is required to show you to your destinations</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location is required to show you to your destinations</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -34,9 +46,5 @@
 	</array>
 	<key>WFPlacesType</key>
 	<string>multi</string>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
-	<key>UILaunchScreen</key>
-	<dict/>
 </dict>
 </plist>

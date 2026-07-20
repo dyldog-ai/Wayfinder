@@ -135,7 +135,7 @@ public class UserLocationManager: NSObject, UserLocationManagerType, CLLocationM
             case .denied, .restricted:
                 self.delegate?.userLocationManagerAuthorizationDenied()
             case .notDetermined:
-                self.locationManager.requestWhenInUseAuthorization()
+                self.locationManager.requestAlwaysAuthorization()
             @unknown default:
                 break
             }
