@@ -75,7 +75,7 @@ public struct CompassLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.leading) {
                     HStack(spacing: 4) {
                         CompassNeedle(headingDegrees: context.state.headingDegrees)
-                        Text(context.state.headingLabel)
+                        Text(context.state.distanceString)
                             .font(.caption.bold())
                             .foregroundColor(.white)
                     }
@@ -107,7 +107,7 @@ public struct CompassLiveActivity: Widget {
             } compactLeading: {
                 CompassGlyph(headingDegrees: context.state.headingDegrees)
             } compactTrailing: {
-                Text(context.state.headingLabel)
+                Text(context.state.distanceString)
                     .font(.caption2.bold())
                     .foregroundColor(.white)
             } minimal: {

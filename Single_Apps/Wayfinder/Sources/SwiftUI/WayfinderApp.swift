@@ -53,17 +53,6 @@ struct WayfinderApp: App {
             mode: mode, location: location, nearestProvider: nearest))
         _searchVM = StateObject(wrappedValue: LocationSearchViewModel(provider: search))
         _savedPlaces = StateObject(wrappedValue: SavedPlacesStore())
-
-        // Push every refresh into the Dynamic Island / Lock Screen Live Activity.
-        compass.onUpdate = { headingDegrees, destinationName, distanceString in
-            guard #available(iOS 16.1, *) else { return }
-            let label = CompassAttributes.cardinalLabel(for: headingDegrees)
-            CompassLiveActivityManager.shared.startOrUpdate(
-                headingDegrees: headingDegrees,
-                headingLabel: label,
-                destinationName: destinationName,
-                distanceString: distanceString)
-        }
     }
 
     var body: some Scene {
@@ -73,6 +62,21 @@ struct WayfinderApp: App {
                 .environmentObject(searchVM)
                 .environmentObject(savedPlaces)
                 .environment(\.compassMode, mode)
+                .onAppear {
+                    onAppear()
+                }
+        }
+    }
+    
+    private func onAppear() {
+        compass.onUpdate = { headingDegrees, destinationName, distanceString in
+            guard #available(iOS 16.1, *) else { return }
+            let label = CompassAttributes.cardinalLabel(for: headingDegrees)
+            CompassLiveActivityManager.shared.startOrUpdate(
+                headingDegrees: headingDegrees,
+                headingLabel: label,
+                destinationName: destinationName,
+                distanceString: distanceString)
         }
     }
 }

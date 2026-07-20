@@ -140,8 +140,7 @@ public final class CompassViewModel: ObservableObject {
         }
 
         // Live Activity hook.
-        let headingDeg = Double(location.latestHeading ?? 0)
-        onUpdate?(headingDeg, destination?.name ?? "", distanceText ?? "")
+        onUpdate?(CompassMath.degrees(fromRadians: needleAngle), destination?.name ?? "", distanceText ?? "")
     }
 
     private func idleHeading(currentHeading: CLLocationDirection) -> CLLocationDirection {
